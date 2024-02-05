@@ -11,12 +11,14 @@ import './models/Section.js';
 
 import sectionRoutes from './routes/sections.js';
 import productRoutes from './routes/products.js';
+import imageRoutes from './routes/images.js';
 
 const server = express();
 server.use(cors());
 
 server.use("/sections", sectionRoutes);
 server.use("/products", productRoutes);
+server.use("/images", imageRoutes);
 
 server.listen(PORT, async () => {
   console.log(`Listening on http://localhost:${PORT}/`);
