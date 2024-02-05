@@ -2,9 +2,9 @@ import { Schema, model, Types } from 'mongoose';
 
 export interface ICategory {
   id: Types.ObjectId;
-  name: string,
-  parent: Types.ObjectId,
-  collections: Array<Types.ObjectId>
+  name: string;
+  parent: Types.ObjectId;
+  collections: Array<Types.ObjectId>;
 }
 
 const categorySchema = new Schema<ICategory>(

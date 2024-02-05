@@ -2,16 +2,16 @@ import { Schema, model, Types } from 'mongoose';
 
 export interface ISection {
   id: Types.ObjectId;
-  name: string,
-  categories: Array<Types.ObjectId>
-  featured: Array<IFeatured>
+  name: string;
+  categories: Array<Types.ObjectId>;
+  featured: Array<IFeatured>;
 }
 
 interface IFeatured {
-  name: string,
-  href: string,
-  image: string,
-  alt: string
+  name: string;
+  href: string;
+  image: string;
+  alt: string;
 }
 
 const sectionSchema = new Schema<ISection>(

@@ -2,9 +2,9 @@ import { Schema, model, Types } from 'mongoose';
 
 export interface ICollection {
   id: Types.ObjectId;
-  name: string,
-  views: number,
-  parent: Types.ObjectId,
+  name: string;
+  views: number;
+  parent: Types.ObjectId;
 }
 
 const collectionSchema = new Schema<ICollection>(
