@@ -2,7 +2,7 @@ import { Schema, model, Types } from 'mongoose';
 
 export interface IStock {
   id: Types.ObjectId;
-  productID: Types.ObjectId;
+  product: Types.ObjectId;
   size: string;
   price: number;
   quantity: number;
@@ -10,7 +10,7 @@ export interface IStock {
 
 const stockSchema = new Schema<IStock>(
   {
-    productID: {
+    product: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'Product'

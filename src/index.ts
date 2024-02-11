@@ -16,6 +16,7 @@ import checkoutController from './routes/checkout.js';
 import imageRoutes from './routes/images.js';
 import productRoutes from './routes/products.js';
 import sectionRoutes from './routes/sections.js';
+import stockRoutes from './routes/stock.js';
 
 const server = express();
 server.use(bodyParser.json())
@@ -25,6 +26,7 @@ server.use("/checkout", checkoutController);
 server.use("/images", imageRoutes);
 server.use("/products", productRoutes);
 server.use("/sections", sectionRoutes);
+server.use("/stock", stockRoutes);
 
 server.listen(PORT, async () => {
   console.log(`Listening on http://localhost:${PORT}/`);
