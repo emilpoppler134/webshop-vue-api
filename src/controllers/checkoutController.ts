@@ -43,11 +43,11 @@ interface IShippingParams {
 }
 
 interface ICardParams {
-  exp_name: string;
+  cc_name: string;
   cc_number: string;
   exp_month: string;
   exp_year: string;
-  exp_csc: string;
+  cc_csc: string;
 }
 
 const stripe = new Stripe(STRIPE_SECRET_KEY);
@@ -72,7 +72,7 @@ async function charge(req: Request, res: Response) {
     }
     
     const product = await Stock.findById(item)
-      .populate({path: 'productID', model: 'Product'});
+      .populate({path: 'product', model: 'Product'});
 
     if (product === null) {
       res.json({status: "ERROR", error: "Product doesn't exist"});
@@ -93,11 +93,11 @@ async function charge(req: Request, res: Response) {
 
     const stripeTokenCreateParams: Stripe.TokenCreateParams = {
       card: {
-        name: payment.exp_name,
+        name: payment.cc_name,
         number: payment.cc_number,
         exp_month: payment.exp_month,
         exp_year: exp_year,
-        cvc: payment.exp_csc,
+        cvc: payment.cc_csc,
         currency: 'sek'
       }
     };
@@ -156,7 +156,7 @@ async function charge(req: Request, res: Response) {
     stripeChargeID = stripeChargeResponse.id;
 
   } catch(err) {
-    res.json({status: "ERROR", err});
+    res.json({status: "ERROR", error: err});
     return;
   }
 
@@ -212,7 +212,7 @@ async function charge(req: Request, res: Response) {
 
     res.json({status: "OK"});
   } catch(err) {
-    res.json({status: "ERROR", err});
+    res.json({status: "ERROR", error: err});
     return;
   }
 }
