@@ -1,24 +1,30 @@
 import express from 'express';
-import cors from 'cors';
 import { connect } from 'mongoose';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 import { PORT, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME } from './config.js';
 
 import './models/Category.js';
-import './models/Stock.js';
 import './models/Collection.js';
+import './models/Customer.js';
+import './models/Order.js';
 import './models/Product.js';
 import './models/Section.js';
+import './models/Stock.js';
 
-import sectionRoutes from './routes/sections.js';
-import productRoutes from './routes/products.js';
+import checkoutController from './routes/checkout.js';
 import imageRoutes from './routes/images.js';
+import productRoutes from './routes/products.js';
+import sectionRoutes from './routes/sections.js';
 
 const server = express();
+server.use(bodyParser.json())
 server.use(cors());
 
-server.use("/sections", sectionRoutes);
-server.use("/products", productRoutes);
+server.use("/checkout", checkoutController);
 server.use("/images", imageRoutes);
+server.use("/products", productRoutes);
+server.use("/sections", sectionRoutes);
 
 server.listen(PORT, async () => {
   console.log(`Listening on http://localhost:${PORT}/`);
