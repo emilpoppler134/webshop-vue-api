@@ -1,7 +1,8 @@
 import express from 'express';
-import { connect } from 'mongoose';
-import bodyParser from 'body-parser';
 import cors from 'cors';
+import bodyParser from 'body-parser';
+import { connect } from 'mongoose';
+
 import { PORT, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_NAME } from './config.js';
 
 import './models/Category.js';
@@ -12,7 +13,7 @@ import './models/Product.js';
 import './models/Section.js';
 import './models/Stock.js';
 
-import checkoutController from './routes/checkout.js';
+import checkoutRoutes from './routes/checkout.js';
 import imageRoutes from './routes/images.js';
 import productRoutes from './routes/products.js';
 import sectionRoutes from './routes/sections.js';
@@ -22,7 +23,7 @@ const server = express();
 server.use(bodyParser.json())
 server.use(cors());
 
-server.use("/checkout", checkoutController);
+server.use("/checkout", checkoutRoutes);
 server.use("/images", imageRoutes);
 server.use("/products", productRoutes);
 server.use("/sections", sectionRoutes);

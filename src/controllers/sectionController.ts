@@ -1,5 +1,6 @@
-import type { Request, Response } from 'express';
 import { Section } from '../models/Section.js';
+
+import type { Request, Response } from 'express';
 
 async function list(req: Request, res: Response) {
   const sections = await Section.find()

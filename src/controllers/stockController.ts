@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
-import type { Request, Response } from 'express';
+
 import { Stock } from '../models/Stock.js';
+
+import type { Request, Response } from 'express';
 
 async function find(req: Request, res: Response) {
   const cart = req.params.id.split(",");

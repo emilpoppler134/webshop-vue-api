@@ -1,6 +1,8 @@
 import { Types } from 'mongoose';
-import type { Request, Response } from 'express';
+
 import { Product } from '../models/Product.js';
+
+import type { Request, Response } from 'express';
 
 async function list(req: Request, res: Response) {
   const products = await Product.find()

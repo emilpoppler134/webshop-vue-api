@@ -1,13 +1,14 @@
 import Stripe from 'stripe';
 import { Types } from 'mongoose';
+
 import { Customer } from '../models/Customer.js';
 import { Order } from '../models/Order.js';
 import { Stock } from '../models/Stock.js';
 import { STRIPE_SECRET_KEY } from '../config.js';
 
-import type { Request, Response } from 'express';
-import type { IOrder } from '../models/Order.js';
 import type { ICustomer } from '../models/Customer.js';
+import type { IOrder } from '../models/Order.js';
+import type { Request, Response } from 'express';
 
 interface IOrderInsertParams extends Omit<IOrder, 'id'|'timestamp'> {}
 interface ICustomerInsertParams extends Omit<ICustomer, 'id'|'timestamp'> {}
@@ -200,13 +201,6 @@ async function charge(req: Request, res: Response) {
 
     if (createOrderResponse === null) {
       res.json({status: "ERROR", error: "Error on order insert"});
-      return;
-    }
-
-    const updateCustomerOrderListResponse = await Order.updateOne(createCustomerResponse.id, {$push: {orders: createOrderResponse.id}});
-
-    if (updateCustomerOrderListResponse === null) {
-      res.json({status: "ERROR", error: "Error on update customer order list"});
       return;
     }
 
