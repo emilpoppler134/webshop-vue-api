@@ -164,13 +164,7 @@ async function charge(req: Request, res: Response) {
   try {
     for (let i = 0; i < purchaseContext.products.length; i++) {
       const item = purchaseContext.products[i];
-      
-      const decrementResponse = await Stock.findByIdAndUpdate(item, { $inc: { quantity: -1 } })
-      
-      if (decrementResponse === null) {
-        res.json({status: "ERROR", error: "Error on quantity decrement"});
-        return;
-      }
+      await Stock.findByIdAndUpdate(item, { $inc: { quantity: -1 } })
     }
 
     const customerCreateParams: ICustomerInsertParams = {
@@ -183,12 +177,6 @@ async function charge(req: Request, res: Response) {
     }
     const createCustomerResponse = await Customer.create(customerCreateParams);
 
-    if (createCustomerResponse === null) {
-      res.json({status: "ERROR", error: "Error on customer insert"});
-      return;
-    }
-
-
     const orderCreateParams: IOrderInsertParams = {
       stripeID: stripeChargeID,
       customer: createCustomerResponse.id,
@@ -197,12 +185,7 @@ async function charge(req: Request, res: Response) {
       line_items: purchaseContext.products.map(item => new Types.ObjectId(item)),
       shipping
     }
-    const createOrderResponse = await Order.create(orderCreateParams);
-
-    if (createOrderResponse === null) {
-      res.json({status: "ERROR", error: "Error on order insert"});
-      return;
-    }
+    await Order.create(orderCreateParams);
 
     res.json({status: "OK"});
   } catch(err) {
