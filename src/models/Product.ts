@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
 export interface IProduct {
   id: Types.ObjectId;
@@ -8,7 +8,7 @@ export interface IProduct {
   image: IImage;
   collections: Array<Types.ObjectId>;
   views: number;
-  timestamp: Date;
+  timestamp: number;
 }
 
 interface IImage {
@@ -54,7 +54,7 @@ const productSchema = new Schema<IProduct>({
     required: true,
   },
   timestamp: {
-    type: Date,
+    type: Number,
     required: true,
   },
 });
