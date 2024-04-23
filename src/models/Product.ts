@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types } from "mongoose";
 
 export interface IProduct {
   id: Types.ObjectId;
@@ -16,50 +16,47 @@ interface IImage {
   type: string;
 }
 
-const productSchema = new Schema<IProduct>(
-  {
-    name: {
-      type: String,
-      required: true
-    },
-    articleNumber: {
-      type: Number,
-      required: true,
-    },
-    stock: [
-      {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'Stock'
-      }
-    ],
-    image: 
+const productSchema = new Schema<IProduct>({
+  name: {
+    type: String,
+    required: true,
+  },
+  articleNumber: {
+    type: Number,
+    required: true,
+  },
+  stock: [
     {
-      key: {
-        type: String,
-        required: true
-      },
-      type: {
-        type: String,
-        required: true
-      }
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Stock",
     },
-    collections: [
-      {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'Collection'
-      }
-    ],
-    views: {
-      type: Number,
+  ],
+  image: {
+    key: {
+      type: String,
       required: true,
     },
-    timestamp: {
-      type: Date,
+    type: {
+      type: String,
       required: true,
     },
-  }
-);
+  },
+  collections: [
+    {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Collection",
+    },
+  ],
+  views: {
+    type: Number,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    required: true,
+  },
+});
 
-export const Product = model<IProduct>('Product', productSchema);
+export const Product = model<IProduct>("Product", productSchema);

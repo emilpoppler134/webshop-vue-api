@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types } from "mongoose";
 
 export interface ISection {
   id: Types.ObjectId;
@@ -14,40 +14,38 @@ interface IFeatured {
   alt: string;
 }
 
-const sectionSchema = new Schema<ISection>(
-  {
-    name: {
-      type: String,
-      required: true
+const sectionSchema = new Schema<ISection>({
+  name: {
+    type: String,
+    required: true,
+  },
+  categories: [
+    {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Category",
     },
-    categories: [
-      {
-        type: Schema.Types.ObjectId,
+  ],
+  featured: [
+    {
+      name: {
+        type: String,
         required: true,
-        ref: 'Category'
-      }
-    ],
-    featured: [
-      {
-        name: {
-          type: String,
-          required: true
-        },
-        href: {
-          type: String,
-          required: true
-        },
-        image: {
-          type: String,
-          required: true
-        },
-        alt: {
-          type: String,
-          required: true
-        }
       },
-    ]
-  }
-);
+      href: {
+        type: String,
+        required: true,
+      },
+      image: {
+        type: String,
+        required: true,
+      },
+      alt: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+});
 
-export const Section = model<ISection>('Section', sectionSchema);
+export const Section = model<ISection>("Section", sectionSchema);

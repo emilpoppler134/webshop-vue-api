@@ -1,14 +1,20 @@
-import { Section } from '../models/Section.js';
+import { Section } from "../models/Section.js";
 
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
+import { ErrorCode } from "../types/StatusCode.js";
+import { ErrorResponse } from "../utils/sendResponse.js";
 
 async function list(req: Request, res: Response) {
   try {
-    const sections = await Section.find()
-      .populate({path: 'categories', populate: { path: 'collections' }}); 
+    const sections = await Section.find().populate({
+      path: "categories",
+      populate: { path: "collections" },
+    });
 
     res.json(sections);
-  } catch { res.status(500).end(); }
+  } catch {
+    throw new ErrorResponse(ErrorCode.SERVER_ERROR, "Something went wrong.");
+  }
 }
 
-export default { list }
+export default { list };

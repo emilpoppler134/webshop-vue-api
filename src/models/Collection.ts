@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types } from "mongoose";
 
 export interface ICollection {
   id: Types.ObjectId;
@@ -7,22 +7,20 @@ export interface ICollection {
   parent: Types.ObjectId;
 }
 
-const collectionSchema = new Schema<ICollection>(
-  {
-    name: {
-      type: String,
-      required: true
-    },
-    views: {
-      type: Number,
-      required: true
-    },
-    parent: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Category'
-    }
-  }
-);
+const collectionSchema = new Schema<ICollection>({
+  name: {
+    type: String,
+    required: true,
+  },
+  views: {
+    type: Number,
+    required: true,
+  },
+  parent: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Category",
+  },
+});
 
-export const Collection = model<ICollection>('Collection', collectionSchema);
+export const Collection = model<ICollection>("Collection", collectionSchema);

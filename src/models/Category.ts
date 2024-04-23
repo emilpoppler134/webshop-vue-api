@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types } from "mongoose";
 
 export interface ICategory {
   id: Types.ObjectId;
@@ -7,25 +7,23 @@ export interface ICategory {
   collections: Array<Types.ObjectId>;
 }
 
-const categorySchema = new Schema<ICategory>(
-  {
-    name: {
-      type: String,
-      required: true
-    },
-    parent: {
+const categorySchema = new Schema<ICategory>({
+  name: {
+    type: String,
+    required: true,
+  },
+  parent: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Section",
+  },
+  collections: [
+    {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'Section'
+      ref: "Collection",
     },
-    collections: [
-      {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'Collection'
-      }
-    ]
-  }
-);
+  ],
+});
 
-export const Category = model<ICategory>('Category', categorySchema);
+export const Category = model<ICategory>("Category", categorySchema);

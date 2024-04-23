@@ -1,17 +1,19 @@
-import Stripe from 'stripe';
-import { Types } from 'mongoose';
+import { Types } from "mongoose";
+import Stripe from "stripe";
 
-import { Customer } from '../models/Customer.js';
-import { Order } from '../models/Order.js';
-import { Stock } from '../models/Stock.js';
-import { STRIPE_SECRET_KEY } from '../config.js';
+import { STRIPE_SECRET_KEY } from "../config.js";
+import { Customer } from "../models/Customer.js";
+import { Order } from "../models/Order.js";
+import { Stock } from "../models/Stock.js";
 
-import type { ICustomer } from '../models/Customer.js';
-import type { IOrder } from '../models/Order.js';
-import type { Request, Response } from 'express';
+import type { Request, Response } from "express";
+import type { ICustomer } from "../models/Customer.js";
+import type { IOrder } from "../models/Order.js";
+import { ErrorCode } from "../types/StatusCode.js";
+import { ErrorResponse } from "../utils/sendResponse.js";
 
-interface IOrderInsertParams extends Omit<IOrder, 'id'|'timestamp'> {}
-interface ICustomerInsertParams extends Omit<ICustomer, 'id'|'timestamp'> {}
+interface IOrderInsertParams extends Omit<IOrder, "id" | "timestamp"> {}
+interface ICustomerInsertParams extends Omit<ICustomer, "id" | "timestamp"> {}
 
 interface IParams {
   products: Array<string>;
@@ -68,21 +70,20 @@ async function charge(req: Request, res: Response) {
     const item = purchaseContext.products[i];
 
     if (item === undefined || !Types.ObjectId.isValid(item)) {
-      res.json({status: "ERROR", error: "Not a valid product ID"});
-      return;
+      throw new ErrorResponse(ErrorCode.BAD_REQUEST, "Not a valid product ID.");
     }
-    
-    const product = await Stock.findById(item)
-      .populate({path: 'product', model: 'Product'});
+
+    const product = await Stock.findById(item).populate({
+      path: "product",
+      model: "Product",
+    });
 
     if (product === null) {
-      res.json({status: "ERROR", error: "Product doesn't exist"});
-      return;
+      throw new ErrorResponse(ErrorCode.NO_RESULT, "Product doesn't exist.");
     }
 
     if (product.quantity === 0) {
-      res.json({status: "ERROR", error: "Product is soldout"});
-      return;
+      throw new ErrorResponse(ErrorCode.CONFLICT, "Product is soldout.");
     }
 
     amount += product.price;
@@ -99,10 +100,12 @@ async function charge(req: Request, res: Response) {
         exp_month: payment.exp_month,
         exp_year: exp_year,
         cvc: payment.cc_csc,
-        currency: 'sek'
-      }
+        currency: "sek",
+      },
     };
-    const stripeTokenResponse = await stripe.tokens.create(stripeTokenCreateParams);
+    const stripeTokenResponse = await stripe.tokens.create(
+      stripeTokenCreateParams
+    );
 
     const stripeCustomerCreateParams: Stripe.CustomerCreateParams = {
       name: customer.name,
@@ -114,7 +117,7 @@ async function charge(req: Request, res: Response) {
         postal_code: customer.billing.postal_code,
         city: customer.billing.city,
         state: undefined,
-        country: customer.billing.country
+        country: customer.billing.country,
       },
       shipping: {
         address: {
@@ -123,18 +126,20 @@ async function charge(req: Request, res: Response) {
           postal_code: shipping.address.postal_code,
           city: shipping.address.city,
           state: undefined,
-          country: shipping.address.country
+          country: shipping.address.country,
         },
         name: shipping.name,
-        phone: shipping.phone
+        phone: shipping.phone,
       },
-      source: stripeTokenResponse.id
-    }
-    const stripeCustomerResponse = await stripe.customers.create(stripeCustomerCreateParams);
+      source: stripeTokenResponse.id,
+    };
+    const stripeCustomerResponse = await stripe.customers.create(
+      stripeCustomerCreateParams
+    );
 
     const stripeChargeCreateParams: Stripe.ChargeCreateParams = {
       amount: amount * 100,
-      currency: 'sek',
+      currency: "sek",
       source: stripeCustomerResponse.default_source?.toString() || undefined,
       customer: stripeCustomerResponse.id,
       receipt_email: stripeCustomerResponse.email || undefined,
@@ -145,26 +150,29 @@ async function charge(req: Request, res: Response) {
           postal_code: shipping.address.postal_code,
           city: shipping.address.city,
           state: undefined,
-          country: shipping.address.country
+          country: shipping.address.country,
         },
         name: shipping.name,
-        phone: shipping.phone
-      }
-    }
-    const stripeChargeResponse = await stripe.charges.create(stripeChargeCreateParams);
+        phone: shipping.phone,
+      },
+    };
+    const stripeChargeResponse = await stripe.charges.create(
+      stripeChargeCreateParams
+    );
 
     stripeCustomerID = stripeCustomerResponse.id;
     stripeChargeID = stripeChargeResponse.id;
-
-  } catch(err) {
-    res.json({status: "ERROR", error: err});
-    return;
+  } catch (err) {
+    throw new ErrorResponse(
+      ErrorCode.SERVER_ERROR,
+      err instanceof Error ? err.message : "Something went wrong."
+    );
   }
 
   try {
     for (let i = 0; i < purchaseContext.products.length; i++) {
       const item = purchaseContext.products[i];
-      await Stock.findByIdAndUpdate(item, { $inc: { quantity: -1 } })
+      await Stock.findByIdAndUpdate(item, { $inc: { quantity: -1 } });
     }
 
     const customerCreateParams: ICustomerInsertParams = {
@@ -173,8 +181,8 @@ async function charge(req: Request, res: Response) {
       email: customer.email,
       phone: customer.phone,
       billing: customer.billing,
-      orders: []
-    }
+      orders: [],
+    };
     const createCustomerResponse = await Customer.create(customerCreateParams);
 
     const orderCreateParams: IOrderInsertParams = {
@@ -182,16 +190,20 @@ async function charge(req: Request, res: Response) {
       customer: createCustomerResponse.id,
       email: customer.email,
       amount,
-      line_items: purchaseContext.products.map(item => new Types.ObjectId(item)),
-      shipping
-    }
+      line_items: purchaseContext.products.map(
+        (item) => new Types.ObjectId(item)
+      ),
+      shipping,
+    };
     await Order.create(orderCreateParams);
 
-    res.json({status: "OK"});
-  } catch(err) {
-    res.json({status: "ERROR", error: err});
-    return;
+    res.json({ status: "OK" });
+  } catch (err) {
+    throw new ErrorResponse(
+      ErrorCode.SERVER_ERROR,
+      err instanceof Error ? err.message : "Something went wrong."
+    );
   }
 }
 
-export default { charge }
+export default { charge };

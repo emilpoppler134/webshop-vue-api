@@ -1,4 +1,4 @@
-import { Schema, model, Types } from 'mongoose';
+import { Schema, model, Types } from "mongoose";
 
 export interface IStock {
   id: Types.ObjectId;
@@ -8,26 +8,24 @@ export interface IStock {
   quantity: number;
 }
 
-const stockSchema = new Schema<IStock>(
-  {
-    product: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Product'
-    },
-    size: {
-      type: String,
-      required: true
-    },
-    price: {
-      type: Number,
-      required: true
-    },
-    quantity: {
-      type: Number,
-      required: true
-    }
-  }
-);
+const stockSchema = new Schema<IStock>({
+  product: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Product",
+  },
+  size: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+});
 
-export const Stock = model<IStock>('Stock', stockSchema);
+export const Stock = model<IStock>("Stock", stockSchema);
