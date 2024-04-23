@@ -4,7 +4,7 @@ import { asyncHandler } from "../handlers/asyncHandler.js";
 
 const router = express.Router();
 
-router.get("/", asyncHandler(productController.list));
-router.get("/:id", asyncHandler(productController.find));
+router.post("/", asyncHandler(productController.list));
+router.post("/:id", asyncHandler(productController.find));
 
 export default router;

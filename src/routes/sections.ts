@@ -4,6 +4,6 @@ import { asyncHandler } from "../handlers/asyncHandler.js";
 
 const router = express.Router();
 
-router.get("/", asyncHandler(sectionController.list));
+router.post("/", asyncHandler(sectionController.list));
 
 export default router;

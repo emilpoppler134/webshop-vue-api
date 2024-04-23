@@ -4,6 +4,6 @@ import { asyncHandler } from "../handlers/asyncHandler.js";
 
 const router = express.Router();
 
-router.get("/:id", asyncHandler(stockController.find));
+router.post("/:id", asyncHandler(stockController.find));
 
 export default router;
