@@ -45,7 +45,7 @@ server.use(errorHandler);
 
 mongodb
   .connect(
-    `mongodb+srv://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}/${DATABASE_NAME}`
+    `mongodb+srv://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@${DATABASE_HOST}/${DATABASE_NAME}`,
   )
   .then(() => {
     console.log("Successfully connected to mongodb.");

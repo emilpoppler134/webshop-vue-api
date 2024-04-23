@@ -104,7 +104,7 @@ async function charge(req: Request, res: Response) {
       },
     };
     const stripeTokenResponse = await stripe.tokens.create(
-      stripeTokenCreateParams
+      stripeTokenCreateParams,
     );
 
     const stripeCustomerCreateParams: Stripe.CustomerCreateParams = {
@@ -134,7 +134,7 @@ async function charge(req: Request, res: Response) {
       source: stripeTokenResponse.id,
     };
     const stripeCustomerResponse = await stripe.customers.create(
-      stripeCustomerCreateParams
+      stripeCustomerCreateParams,
     );
 
     const stripeChargeCreateParams: Stripe.ChargeCreateParams = {
@@ -157,7 +157,7 @@ async function charge(req: Request, res: Response) {
       },
     };
     const stripeChargeResponse = await stripe.charges.create(
-      stripeChargeCreateParams
+      stripeChargeCreateParams,
     );
 
     stripeCustomerID = stripeCustomerResponse.id;
@@ -165,7 +165,7 @@ async function charge(req: Request, res: Response) {
   } catch (err) {
     throw new ErrorResponse(
       ErrorCode.SERVER_ERROR,
-      err instanceof Error ? err.message : "Something went wrong."
+      err instanceof Error ? err.message : "Something went wrong.",
     );
   }
 
@@ -191,7 +191,7 @@ async function charge(req: Request, res: Response) {
       email: customer.email,
       amount,
       line_items: purchaseContext.products.map(
-        (item) => new Types.ObjectId(item)
+        (item) => new Types.ObjectId(item),
       ),
       shipping,
     };
@@ -201,7 +201,7 @@ async function charge(req: Request, res: Response) {
   } catch (err) {
     throw new ErrorResponse(
       ErrorCode.SERVER_ERROR,
-      err instanceof Error ? err.message : "Something went wrong."
+      err instanceof Error ? err.message : "Something went wrong.",
     );
   }
 }
